@@ -26,20 +26,22 @@ public class GatewayServiceApplication {
    @Bean
    RouteLocator staticRoutes(RouteLocatorBuilder builder){
         return builder.routes()
+                .route(r->r.path("/customers/**").uri("lb://CUSTOMER-SERVICE").id("r1"))
+                .route(r->r.path("/products/**").uri("lb://INVENTORY-SERVICE").id("r2"))
                 .route(r->r.path("/publicCountries/**")
                         .filters(f->f
                                 .addRequestHeader("x-rapidapi-host","restcountries-v1.p.rapidapi.com")
                                 .addRequestHeader("x-rapidapi-key","56ea3dc6aamsh03246095835aa59p1d69d5jsndb07f873307f")
                                 .rewritePath("/publicCountries/(?<segment>.*)","/${segment}")
                                 .hystrix(h->h.setName("countries").setFallbackUri("forward:/defaultCountries")))
-                        .uri("https://restcountries-v1.p.rapidapi.com").id("r1"))
+                        .uri("https://restcountries-v1.p.rapidapi.com").id("r3"))
                 .route(r->r.path("/muslim/**")
                         .filters(f->f
                                 .addRequestHeader("x-rapidapi-host","muslimsalat.p.rapidapi.com")
                                 .addRequestHeader("x-rapidapi-key","56ea3dc6aamsh03246095835aa59p1d69d5jsndb07f873307f")
                                 .rewritePath("/muslim/(?<segment>.*)","/${segment}")
                         .hystrix(h->h.setName("muslimsalat").setFallbackUri("forward:/defaultSalat")))
-                        .uri("https://muslimsalat.p.rapidapi.com").id("r2"))
+                        .uri("https://muslimsalat.p.rapidapi.com").id("r4"))
                 .build();
     }
 
